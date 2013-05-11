@@ -1,0 +1,44 @@
+<html ng-app>
+  <head>
+    <title>pig10</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+    <script>
+      function Pig10Controller($scope) {
+        $scope.field = 0;
+        $scope.stack = [];
+        $scope.score = 0;
+        $scope.hands = [8, 2, 3];
+
+        $scope.use = function(i) {
+          var hand = $scope.hands[i];
+          var next = $scope.field + hand;
+          if (next <= 10) {
+            $scope.field = next;
+            $scope.stack.unshift(hand);
+            $scope.hands[i] = Math.floor(10 * Math.random());
+
+            if (next == 10) {
+              $scope.score += $scope.stack.length;
+              $scope.stack = [];
+              $scope.field = 0;
+            }
+          } else if (next > 10) {
+            alert('you cant over 10');
+          }
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <div ng-controller="Pig10Controller">
+      <h1>{{field}}</h1>
+      <h2>{{stack}}</h2>
+      <h3>Score:{{score}}</h3>
+
+      <p>Your hands:</p>
+      <button ng-click="use(0)">{{hands[0]}}</button>
+      <button ng-click="use(1)">{{hands[1]}}</button>
+      <button ng-click="use(2)">{{hands[2]}}</button>
+    </div>
+  </body>
+</html>
