@@ -3,22 +3,52 @@
     <title>pig10</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
     <script>
+      function createDeck() {
+        // Generate
+        var deck = [];
+        for (var i = 0; i < 7; i++) {
+          deck.push(0);
+        }
+        for (var i = 0; i < 5; i++) {
+          deck.push(5);
+        }
+        for (var i = 0; i < 4; i++) {
+          deck.push(10);
+        }
+        for (var n = 1; n <= 9; n++) {
+          if (n == 5)
+            continue;
+          for (var i = 0; i < 8; i++) {
+            deck.push(n);
+          }
+        }
+
+        // Shuffle
+        var shuffled_deck = [];
+        while (deck.length > 0) {
+          shuffled_deck.push(deck.splice(Math.floor(deck.length * Math.random()), 1)[0]);
+        }
+
+        return shuffled_deck;
+      }
+
       function Pig10Controller($scope) {
         // Field
         $scope.field = 0;
         $scope.stack = [];
+        $scope.deck = createDeck();
 
         // You
         $scope.score = 0;
-        $scope.hands = [8, 2, 5];
+        $scope.hands = [$scope.deck.pop(), $scope.deck.pop(), $scope.deck.pop()];
         $scope.action = "add";
 
         // Use your hand
         $scope.use = function(i) {
           var hand = $scope.hands[i];
           var sweep = function() {
-            $scope.stack.unshift(hand);
-            $scope.hands[i] = Math.floor(11 * Math.random()); // New hand
+            $scope.stack.push(hand);
+            $scope.hands[i] = $scope.deck.pop();
           };
 
           if ($scope.action == "add") {
@@ -60,7 +90,7 @@
   </head>
   <body>
     <div ng-controller="Pig10Controller">
-      <h1>{{field}}</h1>
+      <h1>{{field}}(deck:{{deck.length}})</h1>
       <h2>{{stack}}</h2>
       <h3>Score:{{score}}</h3>
 
