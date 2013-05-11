@@ -4,26 +4,47 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
     <script>
       function Pig10Controller($scope) {
+        // Field
         $scope.field = 0;
         $scope.stack = [];
-        $scope.score = 0;
-        $scope.hands = [8, 2, 3];
 
+        // You
+        $scope.score = 0;
+        $scope.hands = [8, 2, 5];
+        $scope.action = "add";
+
+        // Use your hand
         $scope.use = function(i) {
           var hand = $scope.hands[i];
-          var next = $scope.field + hand;
-          if (next <= 10) {
-            $scope.field = next;
-            $scope.stack.unshift(hand);
-            $scope.hands[i] = Math.floor(10 * Math.random());
 
-            if (next == 10) {
-              $scope.score += $scope.stack.length;
-              $scope.stack = [];
-              $scope.field = 0;
+          if ($scope.action == "add") {
+            var next = $scope.field + hand;
+            if (next <= 10) {
+              $scope.field = next;
+              $scope.stack.unshift(hand);
+              $scope.hands[i] = Math.floor(11 * Math.random()); // New hand
+
+              if (next == 10) {
+                $scope.score += $scope.stack.length;
+                $scope.stack = [];
+                $scope.field = 0;
+              }
+            } else {
+              alert('you cant over 10');
             }
-          } else if (next > 10) {
-            alert('you cant over 10');
+          } else if ($scope.action == "sub") {
+            if (hand == 5) {
+              if ($scope.field >= hand) {
+                $scope.field -= hand;
+                $scope.stack.unshift(hand);
+                $scope.hands[i] = Math.floor(11 * Math.random()); // New hand
+              } else {
+                alert('field cant be minus');
+              }
+            } else {
+              alert('only 5 can sub');
+            }
+          } else if ($scope.action == "override") {
           }
         };
       }
@@ -39,6 +60,13 @@
       <button ng-click="use(0)">{{hands[0]}}</button>
       <button ng-click="use(1)">{{hands[1]}}</button>
       <button ng-click="use(2)">{{hands[2]}}</button>
+
+      <p>Actions:</p>
+      <div>
+        <input type="radio" name="action" ng-model="action" value="add">add</input>
+        <input type="radio" name="action" ng-model="action" value="sub">sub</input>
+        <input type="radio" name="action" ng-model="action" value="override">override</input>
+      </div>
     </div>
   </body>
 </html>
