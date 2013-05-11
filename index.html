@@ -16,13 +16,16 @@
         // Use your hand
         $scope.use = function(i) {
           var hand = $scope.hands[i];
+          var sweep = function() {
+            $scope.stack.unshift(hand);
+            $scope.hands[i] = Math.floor(11 * Math.random()); // New hand
+          };
 
           if ($scope.action == "add") {
             var next = $scope.field + hand;
             if (next <= 10) {
               $scope.field = next;
-              $scope.stack.unshift(hand);
-              $scope.hands[i] = Math.floor(11 * Math.random()); // New hand
+              sweep();
 
               if (next == 10) {
                 $scope.score += $scope.stack.length;
@@ -30,14 +33,13 @@
                 $scope.field = 0;
               }
             } else {
-              alert('you cant over 10');
+              alert('you cant over 10'); // TODO 10を超えたら前の手番のスコアに加算する
             }
           } else if ($scope.action == "sub") {
             if (hand == 5) {
               if ($scope.field >= hand) {
                 $scope.field -= hand;
-                $scope.stack.unshift(hand);
-                $scope.hands[i] = Math.floor(11 * Math.random()); // New hand
+                sweep();
               } else {
                 alert('field cant be minus');
               }
@@ -45,6 +47,12 @@
               alert('only 5 can sub');
             }
           } else if ($scope.action == "override") {
+            if (hand == 0 || $scope.field == hand) {
+                $scope.field = hand;
+                sweep();
+            } else {
+              alert('you cant override with it');
+            }
           }
         };
       }
